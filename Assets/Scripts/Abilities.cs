@@ -6,8 +6,8 @@ public class Abilities : MonoBehaviour
 {
     public Rigidbody rb;
     int jumpCounter = 0;
-    bool canSuperJump;
-    bool canDash;
+    bool enableSuperJump;
+    bool enableDash;
    
 
     bool jumpQueued;
@@ -17,8 +17,14 @@ public class Abilities : MonoBehaviour
     void Start() { 
     
         rb = GetComponent<Rigidbody>();
+        enableSuperJump = true;
+
 
     }
+    public bool IsDashing()=> enableDash;
+    public bool IsSuperJumping()=> enableSuperJump;
+
+
 
     // Update is called once per frame
     void Update()
@@ -31,7 +37,7 @@ public class Abilities : MonoBehaviour
     private void FixedUpdate()
     {
         
-        if (jumpQueued)
+        if (jumpQueued && IsSuperJumping())
         {
             rb.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
             time = 0f;

@@ -19,16 +19,17 @@
     public class FirstPersonController : MonoBehaviour
     {
         private Rigidbody rb;
+        public Abilities abilities;
 
-        #region Dash Settings
-        public bool enableDash = true;
+    #region Dash Settings
+    public bool enableDash;
         [SerializeField] private KeyCode dashKey = KeyCode.Q;
         public float dashForce = 100f;
         public float dashCooldown = 1f;
         
         private bool canDash = true;
-        bool isDashing = false;
-        float dashDuration = 0.5f;
+    bool isDashing = false;
+    float dashDuration = 0.5f;
         float dashTimer = 0f;
 
 
@@ -159,8 +160,11 @@
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
+            abilities = GetComponent<Abilities>();
+            enableDash = abilities.IsDashing();
+            
 
-            crosshairObject = GetComponentInChildren<Image>();
+        crosshairObject = GetComponentInChildren<Image>();
 
             // Set internal variables
             playerCamera.fieldOfView = fov;
