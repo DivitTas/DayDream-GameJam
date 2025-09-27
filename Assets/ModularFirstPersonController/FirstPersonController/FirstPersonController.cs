@@ -20,10 +20,21 @@
     {
         private Rigidbody rb;
 
+        #region Dash Settings
+        public bool enableDash = true;
+        [SerializeField] private KeyCode dashKey = KeyCode.Q;
+        public float dashForce = 100f;
+        public float dashCooldown = 1f;
+        
+        private bool canDash = true;
+        bool isDashing = false;
+        float dashDuration = 0.5f;
+        float dashTimer = 0f;
 
-        #region Camera Movement Variables
 
-        public Camera playerCamera;
+    #region Camera Movement Variables
+
+    public Camera playerCamera;
 
         public float fov = 60f;
         public bool invertCamera = false;
@@ -69,11 +80,12 @@
         private RaycastHit leftWallHit;
         private bool wallRight;
         private bool wallLeft;
+        Vector3 dashVelocity = Vector3.zero;
 
 
 
-        // Internal Variables
-        private bool isWalking = false;
+    // Internal Variables
+    private bool isWalking = false;
 
         #region Sprint
 
@@ -162,8 +174,23 @@
             }
         wallLayer = 1 << 3;
         }
+    private void Dash()
+    {
+        dashVelocity = playerCamera.transform.forward.normalized * dashForce;
+        rb.linearVelocity = dashVelocity; // ✅ new API
+        isDashing = true;
+        dashTimer = dashDuration;
 
-        void Start()
+        canDash = false;
+        Invoke(nameof(ResetDash), dashCooldown);
+    }
+
+    private void ResetDash()
+    {
+        canDash = true;
+    }
+
+    void Start()
         {
             if(lockCursor)
             {
@@ -224,11 +251,15 @@
         }
         private void Update()
         {
-            #region Camera
+        if (enableDash && Input.GetKeyDown(KeyCode.Q) && canDash)
+        {
+            Dash();
+        }
+        #region Camera
 
-        
-            // Control camera movement
-            if(cameraCanMove)
+
+        // Control camera movement
+        if (cameraCanMove)
             {
                 yaw = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * mouseSensitivity;
 
@@ -391,8 +422,17 @@
 
         void FixedUpdate()
         {
-            #region Movement
-            if (CheckForWall() && !isGrounded)
+        #region Movement
+        if (isDashing)
+        {
+            dashTimer -= Time.fixedDeltaTime;
+            if (dashTimer <= 0f)
+                isDashing = false;
+
+            rb.linearVelocity = dashVelocity; // lock dash movement
+            return; // skip normal movement while dashing
+        }
+        if (CheckForWall() && !isGrounded)
             {
                 WallRunning();
             }
@@ -787,6 +827,12 @@
         }
     
 
+
+
+
+
+
     }
 
-    #endif
+#endif
+#endregion
