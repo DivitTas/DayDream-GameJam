@@ -8,14 +8,14 @@ public class SacrificeUI : MonoBehaviour
 
     public void SacrificeDash()
     {
-        //abilities.enableDash = false;
+        abilities.enableDash = false;
 
         CloseUI();
     }
 
     public void SacrificeSuperJump()
     {
-        //abilities.enableSuperJump = false;
+        abilities.enableSuperJump = false;
         
         CloseUI();
     }

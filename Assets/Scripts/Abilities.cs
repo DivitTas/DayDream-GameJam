@@ -6,8 +6,8 @@ public class Abilities : MonoBehaviour
 {
     public Rigidbody rb;
     int jumpCounter = 0;
-    bool enableSuperJump;
-    bool enableDash;
+    public bool enableSuperJump;
+    public bool enableDash;
    
 
     bool jumpQueued;
